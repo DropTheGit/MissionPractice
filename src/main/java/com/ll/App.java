@@ -11,6 +11,8 @@ public class App {
     void run() {
         System.out.println("== 명언 앱 ==");
 
+        write();
+
 
         while (true) {
             System.out.print("명령) ");
@@ -30,6 +32,9 @@ public class App {
                 case "삭제":
                     actionRemove(rq);
                     break;
+                case "수정" :
+                    actionModify(rq);
+                    break;
 
             }
         }
@@ -46,6 +51,8 @@ public class App {
         id++;
         Quotation quotation = new Quotation(content, author, id);
         quotations.add(quotation);
+
+        System.out.printf("%d번 명언이 등록되었습니다.\n", id);
     }
 
     void actionList() {
@@ -63,13 +70,42 @@ public class App {
             return;
         }
 
-        int index = findIndexByParam(paramValue, 0);
-        if (index == 0) {
+        int index = findIndexByParam(paramValue, -1);
+        if (index == -1) {
             System.out.printf("%d번 명언이 존재하지 않습니다.\n", paramValue);
+            return;
         }
         quotations.remove(index);
         System.out.println(paramValue + "번 명언이 삭제되었습니다.");
     }
+
+    void actionModify(Rq rq) {
+        int paramValue = rq.getParamAsInt("id", 0);
+        if (paramValue == 0) {
+            System.out.println("id를 정확하게 입력해주세요.");
+            return;
+        }
+
+        int index = findIndexByParam(paramValue, -1);
+        if (index == -1) {
+            System.out.printf("%d번 명언이 존재하지 않습니다.\n", paramValue);
+            return;
+        }
+        Quotation quotation = quotations.get(index);
+        System.out.println("명언(기존) : " + quotation.content);
+        System.out.print("명언 : ");
+        String content = scanner.nextLine();
+        System.out.println("작가(기존) : " + quotation.author);
+        System.out.print("작가 : ");
+        String author = scanner.nextLine();
+        quotation.content = content;
+        quotation.author = author;
+
+        System.out.printf("%d번 명언이 수정되었습니다.\n", paramValue);
+    }
+
+
+
 
     int findIndexByParam(int paramValue, int defaultValue) {
         for (int i = 0; i < quotations.size(); i++) {
@@ -80,6 +116,15 @@ public class App {
         }
         return defaultValue;
     }
+
+    void write(){
+        for (int i = 1; i < 11; i++) {
+            Quotation quotation = new Quotation("명언"+i, "작가"+i, i);
+            id++;
+            quotations.add(quotation);
+        }
+    }
+
 }
 
 
